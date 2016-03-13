@@ -1,5 +1,6 @@
 import deprecateObjectProperties from './deprecateObjectProperties'
 
+// 合并两者一些属性， 返回新obj
 export function createRouterObject(history, transitionManager) {
   return {
     ...history,
@@ -9,6 +10,7 @@ export function createRouterObject(history, transitionManager) {
 }
 
 // deprecated
+// 合并两个对象， 开发模式特殊对待了下(包装了下,输入访问日志)
 export function createRoutingHistory(history, transitionManager) {
   history = {
     ...history,

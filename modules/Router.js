@@ -151,6 +151,8 @@ const Router = React.createClass({
     // the only ones that might be custom routing context props.
     Object.keys(Router.propTypes).forEach(propType => delete props[propType])
 
+    // 这里实际调用getDefaultProps()里的render函数, 会返回return <RouterContext {...props} />
+    // <Router />层是不是由<Provider />层创建的 by:ogoodo.com
     return render({
       ...props,
       history: this.history,
@@ -164,5 +166,8 @@ const Router = React.createClass({
   }
 
 })
-
+/**/
 export default Router
+// 
+
+//

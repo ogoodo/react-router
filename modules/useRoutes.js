@@ -14,7 +14,8 @@ import warning from './routerWarning'
  * - match(location, (error, redirectLocation, nextState) => {})
  * - isActive(pathname, query, indexOnly=false)
  */
-function useRoutes(createHistory) {
+ // 返回增强的 history
+function useRoutes(useRoutes) {
   warning(
     false,
     '`useRoutes` is deprecated. Please use `createTransitionManager` instead.'
