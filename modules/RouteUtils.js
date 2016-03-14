@@ -27,13 +27,15 @@ function checkPropTypes(componentName, propTypes, props) {
   }
 }
 
-//就是合并两个对象
+//就是合并两个对象(plainObject)
 function createRoute(defaultProps, props) {
   return { ...defaultProps, ...props }
 }
 
-
-// 生成路由树返回
+/**
+ * 作用: 将jsx格式的路由配置, 转换成plainObject树结构
+ * 生成路由树返回(能处理嵌套 如: <route><route/></route>)
+ */
 export function createRouteFromReactElement(element) {
   const type = element.type
   const route = createRoute(type.defaultProps, element.props)
@@ -70,7 +72,10 @@ export function createRouteFromReactElement(element) {
  * Note: This method is automatically used when you provide <Route> children
  * to a <Router> component.
  */
-// 生成路由树返回
+ /**
+  * 作用: jsx树转plainObject树
+  * 生成路由树返回(能处理嵌套)
+  */
 export function createRoutesFromReactChildren(children, parentRoute) {
   const routes = []
 
@@ -96,7 +101,10 @@ export function createRoutesFromReactChildren(children, parentRoute) {
  * Creates and returns an array of routes from the given object which
  * may be a JSX route, a plain object route, or an array of either.
  */
- //返回Array形式的路由数组, 兼容jsx和obj及array
+ /**
+  * 作用: 传入jsx树或者plainObject树, 返回plainObject树数组(Array)
+  * @param routes jsx创建的ReactElement 或者 plainObject定义的route
+  */
 export function createRoutes(routes) {
   if (isReactChildren(routes)) {
     routes = createRoutesFromReactChildren(routes)
