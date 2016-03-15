@@ -1,12 +1,12 @@
 import React from 'react'
 import warning from './routerWarning'
 
-// 类型验证
+// 类型验证(是React Element返回true)
 function isValidChild(object) {
   return object == null || React.isValidElement(object)
 }
 
-// 类型验证
+// 类型验证(是React Element返回true)
 export function isReactChildren(object) {
   return isValidChild(object) || (Array.isArray(object) && object.every(isValidChild))
 }

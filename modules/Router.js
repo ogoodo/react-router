@@ -9,6 +9,7 @@ import { createRoutes } from './RouteUtils'
 import { createRouterObject, createRoutingHistory } from './RouterUtils'
 import warning from './routerWarning'
 
+// 判断history是否过时了
 function isDeprecatedHistory(history) {
   return !history || !history.__v2_compatible__
 }
@@ -70,6 +71,7 @@ const Router = React.createClass({
 
     const { history, transitionManager, router } = this.createRouterObjects()
 
+    //订阅url改变消息, 如果没出错触发setState()重新render
     this._unlisten = transitionManager.listen((error, state) => {
       if (error) {
         this.handleError(error)
@@ -82,6 +84,7 @@ const Router = React.createClass({
     this.router = router
   },
 
+  // 没干啥高深事, 返回几个要使用的对象
   createRouterObjects() {
     const { matchContext } = this.props
     if (matchContext) {
@@ -95,10 +98,13 @@ const Router = React.createClass({
       history = this.wrapDeprecatedHistory(history)
     }
 
+    // 返回了一个方法集(类似:{a:func, b:func})
     const transitionManager = createTransitionManager(
       history, createRoutes(routes || children)
     )
+    //合并两对象部分属性, 返回了个新对象
     const router = createRouterObject(history, transitionManager)
+    //合并两对象, 返回了个新对象
     const routingHistory = createRoutingHistory(history, transitionManager)
 
     return { history: routingHistory, transitionManager, router }

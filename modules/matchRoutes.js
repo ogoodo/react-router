@@ -3,6 +3,11 @@ import { loopAsync } from './AsyncUtils'
 import { matchPattern } from './PatternUtils'
 import { createRoutes } from './RouteUtils'
 
+
+/**
+ * 获取子节点路由, 支持递归和异步,
+ * 可以是childRoutes对象, 或者getChildRoutes()方法
+ */
 function getChildRoutes(route, location, callback) {
   if (route.childRoutes) {
     return [ null, route.childRoutes ]
@@ -27,6 +32,9 @@ function getChildRoutes(route, location, callback) {
   return result  // Might be undefined.
 }
 
+/**
+ * 获取indexRoute的函数
+ */
 function getIndexRoute(route, location, callback) {
   if (route.indexRoute) {
     callback(null, route.indexRoute)
@@ -56,6 +64,9 @@ function getIndexRoute(route, location, callback) {
   }
 }
 
+/**
+ * 将paramNames 和paramValues值增加到 params里去(不会覆盖原来值,可能会影响存储结构)
+ */
 function assignParams(params, paramNames, paramValues) {
   return paramNames.reduce(function (params, paramName, index) {
     const paramValue = paramValues && paramValues[index]
@@ -169,6 +180,9 @@ function matchRouteDeep(
  * Note: This operation may finish synchronously if no routes have an
  * asynchronous getChildRoutes method.
  */
+//matchRoutes 方法会匹配出 Route 组件树中与当前 location 对象匹配的一个子集，并且得到了 nextState  
+//参考: https://segmentfault.com/a/1190000004075348#articleHeader4
+//没细看
 function matchRoutes(
   routes, location, callback,
   remainingPathname=location.pathname, paramNames=[], paramValues=[]

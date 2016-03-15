@@ -14,6 +14,9 @@ function hasAnyProperties(object) {
   return false
 }
 
+/**
+ * 这里输出了一个类(方法集合)
+ */
 export default function createTransitionManager(history, routes) {
   let state = {}
 
@@ -49,7 +52,11 @@ export default function createTransitionManager(history, routes) {
 
   let partialNextState
 
+  /**
+   * @param location[location对象]
+   */
   function match(location, callback) {
+    // 判断url是否有改变
     if (partialNextState && partialNextState.location === location) {
       // Continue from where we left off.
       finishMatch(partialNextState, callback)
@@ -247,9 +254,14 @@ export default function createTransitionManager(history, routes) {
    * changes, we update state and call the listener. We can also
    * gracefully handle errors and redirects.
    */
+  /**
+   * 入口  这个是url改变后调用的第一个函数       重要       重要       重要
+   */
   function listen(listener) {
     // TODO: Only use a single history listener. Otherwise we'll
     // end up with multiple concurrent calls to match.
+    // react-router-redux有hook了listory.listen函数, 在内部就和了redux的store做处理
+    //这里就是调用react-router-redux里的listen函数(看sync.js 122行)
     return history.listen(function (location) {
       if (state.location === location) {
         listener(null, state)
