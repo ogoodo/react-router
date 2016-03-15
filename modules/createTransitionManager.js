@@ -65,6 +65,10 @@ export default function createTransitionManager(history, routes) {
         if (error) {
           callback(error)
         } else if (nextState) {
+          //如果路径完全匹配上, 会来到这里
+          //@param nextState[Object]
+          //@param nextState.params[Object]
+          //@param nextState.routes[Array]  匹配成功的route数组
           finishMatch({ ...nextState, location }, callback)
         } else {
           callback()
@@ -74,15 +78,19 @@ export default function createTransitionManager(history, routes) {
   }
 
   function finishMatch(nextState, callback) {
+    //计算出离开哪些路由, 进入那些路由
     const { leaveRoutes, enterRoutes } = computeChangedRoutes(state, nextState)
 
+    // 给每个route触发onLeave(如果有设定onLeave回调的话)
     runLeaveHooks(leaveRoutes)
 
     // Tear down confirmation hooks for left routes
+    // 清理重复使用路由hook数据(相当于初始化一下, route复用初始化)
     leaveRoutes
       .filter(route => enterRoutes.indexOf(route) === -1)
       .forEach(removeListenBeforeHooksForRoute)
 
+    //看到这里了        看        看        看
     runEnterHooks(enterRoutes, nextState, function (error, redirectInfo) {
       if (error) {
         callback(error)
@@ -96,6 +104,10 @@ export default function createTransitionManager(history, routes) {
           } else {
             // TODO: Make match a pure function and have some other API
             // for "match and update state".
+            // 这里应该是获取到了, route和component两个队列
+            // location解析到route和component的动作就完成了
+            // 本文件的目的就是做这个事 by:ogoodo.com
+            //      重点     重点     重点
             callback(null, null, (
               state = { ...nextState, components })
             )

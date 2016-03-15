@@ -81,6 +81,13 @@ export function compilePattern(pattern) {
  * - paramNames
  * - paramValues
  */
+ /**
+  * 调用  
+  *   matchPattern('/',     '/Page2/Tab1').remainingPathname === 'Page2/Tab1'(即返回Tab2)
+  *   matchPattern('Page2', 'Page2/Tab1').remainingPathname  === 'Tab1'(即返回Tab2)
+  *   matchPattern('Page1', 'Page2/Tab1').remainingPathname  ===  null(即返回null)
+  *   matchPattern('Tab1',  'Tab1').remainingPathname        === ''(即返回'')
+  */
 export function matchPattern(pattern, pathname) {
   // Make leading slashes consistent between pattern and pathname.
   if (pattern.charAt(0) !== '/') {

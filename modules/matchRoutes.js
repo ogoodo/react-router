@@ -7,6 +7,7 @@ import { createRoutes } from './RouteUtils'
 /**
  * 获取子节点路由, 支持递归和异步,
  * 可以是childRoutes对象, 或者getChildRoutes()方法
+ * @param route[出入<Router />的routes属性][应该<Router />的字节点也可以]
  */
 function getChildRoutes(route, location, callback) {
   if (route.childRoutes) {
@@ -16,11 +17,15 @@ function getChildRoutes(route, location, callback) {
     return []
   }
 
+  //估计异步路由第一次加载是异步, 以后从缓存取就可以是同步了
   let sync = true, result
 
+  // 这里可以是异步加载
   route.getChildRoutes(location, function (error, childRoutes) {
+    // 异步加载完之后, 将新加载的路由标准化(jsx和plainObject统一为plainObject路由队列)
     childRoutes = !error && createRoutes(childRoutes)
     if (sync) {
+      //异步加载路由, 第二次后从缓存取就会来到这里
       result = [ error, childRoutes ]
       return
     }
@@ -92,6 +97,7 @@ function matchRouteDeep(
 ) {
   let pattern = route.path || ''
 
+  // 如果是绝对路径, 初始化些变量
   if (pattern.charAt(0) === '/') {
     remainingPathname = location.pathname
     paramNames = []
@@ -99,11 +105,14 @@ function matchRouteDeep(
   }
 
   if (remainingPathname !== null) {
+    // 待匹配路径remainingPathname用正则减去一匹配路径pattern
+    // 如果matched.remainingPathname === null 路径没匹配上
     const matched = matchPattern(pattern, remainingPathname)
     remainingPathname = matched.remainingPathname
     paramNames = [ ...paramNames, ...matched.paramNames ]
     paramValues = [ ...paramValues, ...matched.paramValues ]
 
+    //如果路径全部都匹配上了
     if (remainingPathname === '' && route.path) {
       const match = {
         routes: [ route ],
@@ -127,7 +136,7 @@ function matchRouteDeep(
             )
             match.routes.push(indexRoute)
           }
-
+          //默认的最终匹配(匹配深度最大)会到这里回调
           callback(null, match)
         }
       })
@@ -135,6 +144,7 @@ function matchRouteDeep(
     }
   }
 
+  //如果路径还没匹配完成
   if (remainingPathname != null || route.childRoutes) {
     // Either a) this route matched at least some of the path or b)
     // we don't have to load this route's children asynchronously. In
@@ -149,6 +159,7 @@ function matchRouteDeep(
             callback(error)
           } else if (match) {
             // A child route matched! Augment the match and pass it up the stack.
+            //匹配成功了的话， 这里会压入route
             match.routes.unshift(route)
             callback(null, match)
           } else {
@@ -165,6 +176,7 @@ function matchRouteDeep(
       onChildRoutes(...result)
     }
   } else {
+    //没匹配到
     callback()
   }
 }
@@ -183,6 +195,10 @@ function matchRouteDeep(
 //matchRoutes 方法会匹配出 Route 组件树中与当前 location 对象匹配的一个子集，并且得到了 nextState  
 //参考: https://segmentfault.com/a/1190000004075348#articleHeader4
 //没细看
+/**
+ * matchRoutes->matchRouteDeep->matchRoutes 会递归调用
+ * matchRoutes就做个循环, 主要逻辑给matchRouteDeep传参routes[index]去运算了
+ */
 function matchRoutes(
   routes, location, callback,
   remainingPathname=location.pathname, paramNames=[], paramValues=[]

@@ -72,6 +72,7 @@ const Router = React.createClass({
     const { history, transitionManager, router } = this.createRouterObjects()
 
     //订阅url改变消息, 如果没出错触发setState()重新render
+    // 其实最终还是调用history的订阅消息人
     this._unlisten = transitionManager.listen((error, state) => {
       if (error) {
         this.handleError(error)
