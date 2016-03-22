@@ -284,6 +284,7 @@ export default function createTransitionManager(history, routes) {
           } else if (redirectLocation) {
             history.transitionTo(redirectLocation)
           } else if (nextState) {
+            //这里会回掉Router的函数, 最终调用setState
             listener(null, nextState)
           } else {
             warning(
